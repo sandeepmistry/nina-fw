@@ -50,9 +50,9 @@ class WiFiClass
 public:
   WiFiClass();
 
-  uint8_t begin(const char* ssid);
-  uint8_t begin(const char* ssid, uint8_t key_idx, const char* key);
-  uint8_t begin(const char* ssid, const char* key);
+  uint8_t begin(const char* ssid, uint8_t channel = 0);
+  uint8_t begin(const char* ssid, uint8_t key_idx, const char* key, uint8_t channel = 0);
+  uint8_t begin(const char* ssid, const char* key, uint8_t channel = 0);
 
   uint8_t beginAP(const char *ssid, uint8_t channel);
   uint8_t beginAP(const char *ssid, uint8_t key_idx, const char* key, uint8_t channel);

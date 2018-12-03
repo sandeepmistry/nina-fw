@@ -40,11 +40,17 @@ WiFiServer tcpServers[MAX_SOCKETS];
 int setNet(const uint8_t command[], uint8_t response[])
 {
   char ssid[32 + 1];
+  uint8_t ssidLen = command[3];
+  uint8_t channel = 0;
 
   memset(ssid, 0x00, sizeof(ssid));
-  memcpy(ssid, &command[4], command[3]);
+  memcpy(ssid, &command[4], ssidLen);
 
-  WiFi.begin(ssid);
+  if (command[2] > 1) {
+    channel = command[5 + ssidLen];
+  }
+
+  WiFi.begin(ssid, channel);
 
   response[2] = 1; // number of parameters
   response[3] = 1; // parameter 1 length
@@ -57,14 +63,21 @@ int setPassPhrase(const uint8_t command[], uint8_t response[])
 {
   char ssid[32 + 1];
   char pass[64 + 1];
+  uint8_t ssidLen = command[3];
+  uint8_t passLen = command[4 + ssidLen];
+  uint8_t channel = 0;
 
   memset(ssid, 0x00, sizeof(ssid));
   memset(pass, 0x00, sizeof(pass));
 
-  memcpy(ssid, &command[4], command[3]);
-  memcpy(pass, &command[5 + command[3]], command[4 + command[3]]);
+  memcpy(ssid, &command[4], ssidLen);
+  memcpy(pass, &command[5 + ssidLen], passLen);
 
-  WiFi.begin(ssid, pass);
+  if (command[2] > 2) {
+    channel = command[6 + ssidLen + passLen];
+  }
+
+  WiFi.begin(ssid, pass, channel);
 
   response[2] = 1; // number of parameters
   response[3] = 1; // parameter 1 length
@@ -77,14 +90,21 @@ int setKey(const uint8_t command[], uint8_t response[])
 {
   char ssid[32 + 1];
   char key[26 + 1];
+  uint8_t ssidLen = command[3];
+  uint8_t passLen = command[6 + ssidLen];
+  uint8_t channel = 0;
 
   memset(ssid, 0x00, sizeof(ssid));
   memset(key, 0x00, sizeof(key));
 
-  memcpy(ssid, &command[4], command[3]);
-  memcpy(key, &command[7 + command[3]], command[6 + command[3]]);
+  memcpy(ssid, &command[4], ssidLen);
+  memcpy(key, &command[7 + ssidLen], passLen);
 
-  WiFi.begin(ssid, key);
+  if (command[2] > 3) {
+    channel = command[8 + ssidLen + passLen];
+  }
+
+  WiFi.begin(ssid, key, channel);
 
   response[2] = 1; // number of parameters
   response[3] = 1; // parameter 1 length

@@ -155,24 +155,25 @@ int WiFiClass::ping(/*IPAddress*/uint32_t host, uint8_t ttl)
   }
 }
 
-uint8_t WiFiClass::begin(const char* ssid)
+uint8_t WiFiClass::begin(const char* ssid, uint8_t channel)
 {
-  return begin(ssid, "");
+  return begin(ssid, "", channel);
 }
 
-uint8_t WiFiClass::begin(const char* ssid, uint8_t key_idx, const char* key)
+uint8_t WiFiClass::begin(const char* ssid, uint8_t key_idx, const char* key, uint8_t channel)
 {
-  return begin(ssid, key);
+  return begin(ssid, key, channel);
 }
 
-uint8_t WiFiClass::begin(const char* ssid, const char* key)
+uint8_t WiFiClass::begin(const char* ssid, const char* key, uint8_t channel)
 {
   wifi_config_t wifiConfig;
 
   memset(&wifiConfig, 0x00, sizeof(wifiConfig));
   strncpy((char*)wifiConfig.sta.ssid, ssid, sizeof(wifiConfig.sta.ssid));
   strncpy((char*)wifiConfig.sta.password, key, sizeof(wifiConfig.sta.password));
-  wifiConfig.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
+  wifiConfig.sta.channel = channel;
+  wifiConfig.sta.scan_method = (channel == 0) ? WIFI_ALL_CHANNEL_SCAN : WIFI_FAST_SCAN;
   _status = WL_NO_SSID_AVAIL;
 
   _interface = ESP_IF_WIFI_STA;
